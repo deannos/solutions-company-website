@@ -21,10 +21,12 @@ declare module "express-session" {
 export async function setupAuth(app: express.Express) {
   // Setup session store with PostgreSQL
   const connectionString = process.env.DATABASE_URL || "";
+  // console.log("Raw DATABASE_URL:", connectionString);
   const sql = postgres(connectionString);
 
-  // Create the sessions table if it doesn't exist
+  // Create required tables
   try {
+    // Session table
     await sql`
       CREATE TABLE IF NOT EXISTS "session" (
         "sid" varchar NOT NULL COLLATE "default",
@@ -34,8 +36,20 @@ export async function setupAuth(app: express.Express) {
       )
     `;
     log("Sessions table initialized", "auth");
+
+    // Users table
+    await sql`
+      CREATE TABLE IF NOT EXISTS users (
+        id SERIAL PRIMARY KEY,
+        username VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `;
+    log("Users table initialized", "auth");
   } catch (error) {
-    log(`Error creating sessions table: ${error}`, "auth-error");
+    log(`Database initialization error: ${error}`, "auth-error");
+    throw error; // Prevent app from starting with bad DB state
   }
 
   // Configure sessions middleware
@@ -77,9 +91,9 @@ export async function setupAuth(app: express.Express) {
     if (req.session.userId) {
       next();
     } else {
-      res.status(401).json({ 
-        success: false, 
-        message: "Unauthorized" 
+      res.status(401).json({
+        success: false,
+        message: "Unauthorized",
       });
     }
   };
@@ -88,26 +102,28 @@ export async function setupAuth(app: express.Express) {
   app.post("/api/auth/register", async (req: Request, res: Response) => {
     try {
       const validatedData = insertUserSchema.parse(req.body);
-      
+
       // Check if user already exists
-      const existingUser = await storage.getUserByUsername(validatedData.username);
+      const existingUser = await storage.getUserByUsername(
+        validatedData.username
+      );
       if (existingUser) {
         return res.status(400).json({
           success: false,
           message: "Username already exists",
         });
       }
-      
+
       // Hash password and create user
       const hashedPassword = hashSync(validatedData.password, 10);
       const user = await storage.createUser({
         ...validatedData,
         password: hashedPassword,
       });
-      
+
       // Set session
       req.session.userId = user.id;
-      
+
       // Return user without password
       const { password, ...userWithoutPassword } = user;
       res.status(201).json(userWithoutPassword);
@@ -130,7 +146,7 @@ export async function setupAuth(app: express.Express) {
   app.post("/api/auth/login", async (req: Request, res: Response) => {
     try {
       const { username, password } = req.body;
-      
+
       // Validate input
       if (!username || !password) {
         return res.status(400).json({
@@ -138,7 +154,7 @@ export async function setupAuth(app: express.Express) {
           message: "Username and password are required",
         });
       }
-      
+
       // Find user
       const user = await storage.getUserByUsername(username);
       if (!user) {
@@ -147,7 +163,7 @@ export async function setupAuth(app: express.Express) {
           message: "Invalid username or password",
         });
       }
-      
+
       // Verify password
       const passwordMatch = compareSync(password, user.password);
       if (!passwordMatch) {
@@ -156,10 +172,10 @@ export async function setupAuth(app: express.Express) {
           message: "Invalid username or password",
         });
       }
-      
+
       // Set session
       req.session.userId = user.id;
-      
+
       // Return user without password
       const { password: _, ...userWithoutPassword } = user;
       res.status(200).json(userWithoutPassword);
@@ -179,7 +195,7 @@ export async function setupAuth(app: express.Express) {
           message: "Failed to logout",
         });
       }
-      
+
       res.status(200).json({
         success: true,
         message: "Logged out successfully",
@@ -193,7 +209,7 @@ export async function setupAuth(app: express.Express) {
       if (!req.session.userId) {
         return res.status(200).json(null);
       }
-      
+
       // Get user from database
       const user = await storage.getUser(req.session.userId);
       if (!user) {
@@ -201,7 +217,7 @@ export async function setupAuth(app: express.Express) {
         req.session.destroy(() => {});
         return res.status(200).json(null);
       }
-      
+
       // Return user without password
       const { password, ...userWithoutPassword } = user;
       res.status(200).json(userWithoutPassword);
@@ -214,9 +230,13 @@ export async function setupAuth(app: express.Express) {
   });
 
   // Protected routes
-  app.get("/api/admin/*", isAuthenticated, (req: Request, res: Response, next: NextFunction) => {
-    next();
-  });
+  app.get(
+    "/api/admin/*",
+    isAuthenticated,
+    (req: Request, res: Response, next: NextFunction) => {
+      next();
+    }
+  );
 
   return { isAuthenticated };
 }
