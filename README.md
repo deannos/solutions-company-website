@@ -15,46 +15,107 @@ A modern web application built with Express.js for the backend and React for the
 
 ## Project Structure
 
-. ├── client/ # Frontend code │ ├── src/ │ │ ├── components/ # Reusable UI components │ │ ├── hooks/ # Custom React hooks │ │ ├── lib/ # Utility functions │ │ ├── pages/ # Page components │ │ ├── App.tsx # Main React component │ │ ├── main.tsx # Entry point │ │ └── index.css # Global styles │ └── index.html # HTML template ├── server/ # Backend code │ ├── auth.ts # Authentication setup │ ├── db.ts # Database connection │ ├── index.ts # Main server entry point │ ├── routes.ts # API routes │ ├── storage.ts # Data storage logic │ └── vite.ts # Vite middleware for SSR ├── shared/ # Shared code between client and server │ ├── schema.ts # Zod schemas │ └── types.ts # Shared TypeScript types ├── attached_assets/ # Project assets ├── .replit # Replit configuration ├── drizzle.config.ts # Drizzle ORM configuration ├── package.json # Project dependencies and scripts ├── tailwind.config.ts # TailwindCSS configuration ├── tsconfig.json # TypeScript configuration └── vite.config.ts # Vite configuration
+```
+.
+├── client/                # Frontend code
+│   ├── src/
+│   │   ├── components/    # Reusable UI components
+│   │   ├── hooks/         # Custom React hooks
+│   │   ├── lib/           # Utility functions
+│   │   ├── pages/         # Page components
+│   │   ├── App.tsx        # Main React component
+│   │   ├── main.tsx       # Entry point
+│   │   └── index.css      # Global styles
+│   └── index.html         # HTML template
+├── server/                # Backend code
+│   ├── auth.ts            # Authentication setup
+│   ├── db.ts              # Database connection
+│   ├── index.ts           # Main server entry point
+│   ├── routes.ts          # API routes
+│   ├── storage.ts         # Data storage logic
+│   └── vite.ts            # Vite middleware for SSR
+├── shared/                # Shared code between client and server
+│   ├── schema.ts          # Zod schemas
+│   └── types.ts           # Shared TypeScript types
+├── attached_assets/       # Project assets
+├── .replit                # Replit configuration
+├── drizzle.config.ts      # Drizzle ORM configuration
+├── package.json           # Project dependencies and scripts
+├── tailwind.config.ts     # TailwindCSS configuration
+├── tsconfig.json          # TypeScript configuration
+└── vite.config.ts         # Vite configuration
+```
 
-website
-Install dependencies:
+## Installation
 
-install
-Configure the database:
+### Install dependencies:
 
-Update the database connection settings in server/db.ts.
+```bash
+npm install
+```
 
-Push database schema:
+### Configure the database:
 
-push
-Development
+1. Update the database connection settings in `server/db.ts`.
+2. Make sure PostgreSQL is running on your system.
+
+### Push database schema:
+
+```bash
+npm run db:push
+```
+
+## Development
+
 Start the development server:
 
-dev
-Backend: Runs on http://localhost:5000
-Frontend: Runs on http://localhost:5173
-Build
+```bash
+npm run dev
+```
+
+This will start:
+- Backend: Runs on http://localhost:5000
+- Frontend: Runs on http://localhost:5173
+
+During development, any changes to the code will trigger automatic reloading.
+
+## Build
+
 To build the project for production:
 
-build
-Deployment
+```bash
+npm run build
+```
+
+This creates optimized production bundles for both the client and server.
+
+## Deployment
+
 Run the production build:
 
-start
-Scripts
-npm run dev: Start the development server.
-npm run build: Build the project for production.
-npm run start: Start the production server.
-npm run check: Type-check the project.
-npm run db:push: Push database schema using Drizzle ORM.
-Technologies Used
-Backend: Express.js, Passport.js, Drizzle ORM
-Frontend: React, Vite, TailwindCSS, Radix UI
-Validation: Zod
-Database: PostgreSQL
-State Management: React Query
-Build Tools: TypeScript, Esbuild, Vite
-License
-This project is licensed under the MIT License. See the LICENSE file for details.
+```bash
+npm run start
+```
 
+This will start the application in production mode, serving the optimized frontend assets.
+
+## Scripts
+
+- `npm run dev`: Start the development server.
+- `npm run build`: Build the project for production.
+- `npm run start`: Start the production server.
+- `npm run check`: Type-check the project.
+- `npm run db:push`: Push database schema using Drizzle ORM.
+
+## Technologies Used
+
+- **Backend**: Express.js, Passport.js, Drizzle ORM
+- **Frontend**: React, Vite, TailwindCSS, Radix UI
+- **Validation**: Zod
+- **Database**: PostgreSQL
+- **State Management**: React Query
+- **Build Tools**: TypeScript, Esbuild, Vite
+
+## License
+
+This project is licensed under the MIT License. See the LICENSE file for details.
