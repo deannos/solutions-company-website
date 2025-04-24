@@ -1020,3 +1020,52 @@ export const UserProfile = ({ userId, showDetails = false }: UserProfileProps) =
 - Mobile application support
 
 ## Scripts
+
+The project includes various npm scripts for development, testing, building, and deployment. Here's a comprehensive list grouped by purpose:
+
+### Development Scripts
+
+| Script | Description | Usage |
+|--------|-------------|-------|
+| `npm run dev` | Starts both frontend and backend in development mode with hot-reloading | `npm run dev` |
+| `npm run dev:client` | Starts only the frontend development server | `npm run dev:client` |
+| `npm run dev:server` | Starts only the backend development server | `npm run dev:server` |
+| `npm run watch` | Runs TypeScript in watch mode for automatic recompilation | `npm run watch` |
+
+### Build Scripts
+
+| Script | Description | Usage |
+|--------|-------------|-------|
+| `npm run build` | Builds the entire application for production | `npm run build` |
+| `npm run build:client` | Builds only the frontend for production | `npm run build:client` |
+| `npm run build:server` | Builds only the backend for production | `npm run build:server` |
+| `npm run clean` | Removes all build artifacts and caches | `npm run clean` |
+
+### Testing Scripts
+
+| Script | Description | Usage |
+|--------|-------------|-------|
+| `npm run test` | Runs all tests | `npm run test` |
+| `npm run test:unit` | Runs only unit tests | `npm run test:unit` |
+| `npm run test:integration` | Runs only integration tests | `npm run test:integration` |
+| `npm run test:e2e` | Runs end-to-end tests | `npm run test:e2e` |
+| `npm run test:coverage` | Runs tests with coverage reporting | `npm run test:coverage` |
+| `npm run test:watch` | Runs tests in watch mode | `npm run test:watch` |
+
+### Code Quality Scripts
+
+| Script | Description | Usage |
+|--------|-------------|-------|
+| `npm run lint` | Runs ESLint to check code quality | `npm run lint` |
+| `npm run lint:fix` | Fixes automatically fixable linting issues | `npm run lint:fix` |
+| `npm run format` | Formats code using Prettier | `npm run format` |
+| `npm run check` | Runs TypeScript type checking | `npm run check` |
+| `npm run validate` | Runs linting, formatting, and type checking in sequence | `npm run validate` |
+
+### Database Scripts
+
+| Script | Description | Usage |
+|--------|-------------|-------|
+| `npm run db:push` | Pushes schema changes to the database | `npm run db:push` |
+| `npm run db:pull` | Pulls database schema into your codebase | `npm run db:pull` |
+| `npm run db:generate` | Generates migration files based on schema changes | `npm run db:generate` |
