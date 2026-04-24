@@ -39,7 +39,8 @@ app.use((req, res, next) => {
   next();
 });
 
-(async () => {
+// Async initialization — keep a promise so Vercel serverless can await it on cold start
+const initPromise = (async () => {
   const server = await registerRoutes(app);
 
   // Global error handler
@@ -59,18 +60,29 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  // Use environment variable for port or default to 3001
-  const port = process.env.PORT || 3001;
-  server.listen(
-    {
-      port: Number(port),
-      host: "0.0.0.0",
-      reusePort: true,
-    },
-    () => {
-      log(
-        `Server running on http://localhost:${port} and http://0.0.0.0:${port}`
-      );
-    }
-  );
+  return server;
 })();
+
+// Start HTTP server for local / non-Vercel environments
+if (!process.env.VERCEL) {
+  initPromise
+    .then((server) => {
+      const port = process.env.PORT || 3001;
+      server.listen(
+        { port: Number(port), host: "0.0.0.0" },
+        () => {
+          log(`Server running on http://localhost:${port}`);
+        }
+      );
+    })
+    .catch((err) => {
+      console.error("Failed to start server:", err);
+      process.exit(1);
+    });
+}
+
+// Default export for Vercel serverless — awaits init so routes are ready
+export default async (req: Request, res: Response) => {
+  await initPromise;
+  app(req as any, res as any);
+};

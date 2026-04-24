@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "functions": {
+    "server/index.ts": {
+      "includeFiles": "dist/public/**",
+      "memory": 512,
+      "maxDuration": 30
+    }
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/server/index.ts" }
+  ]
+}

@@ -6,8 +6,6 @@ import * as dotenv from "dotenv";
 
 // 1. Load environment FIRST
 dotenv.config();
-console.log("Current directory:", process.cwd());
-console.log("Raw DATABASE_URL:", process.env.DATABASE_URL);
 
 // 2. Validate connection string
 const connectionString = process.env.DATABASE_URL;

@@ -39,7 +39,7 @@ export default function Contact() {
 
   const mutation = useMutation({
     mutationFn: (data: ContactFormValues) => {
-      return apiRequest("/api/contact", "POST", data);
+      return apiRequest("POST", "/api/contact", data);
     },
     onSuccess: (response) => {
       console.log("Success response:", response);
