@@ -21,8 +21,7 @@ declare module "express-session" {
 export async function setupAuth(app: express.Express) {
   // Setup session store with PostgreSQL
   const connectionString = process.env.DATABASE_URL || "";
-  // console.log("Raw DATABASE_URL:", connectionString);
-  const sql = postgres(connectionString);
+  const sql = postgres(connectionString, { ssl: { rejectUnauthorized: false } });
 
   // Create required tables
   try {
@@ -233,7 +232,7 @@ export async function setupAuth(app: express.Express) {
   app.get(
     "/api/admin/*",
     isAuthenticated,
-    (req: Request, res: Response, next: NextFunction) => {
+    (_req: Request, _res: Response, next: NextFunction) => {
       next();
     }
   );
